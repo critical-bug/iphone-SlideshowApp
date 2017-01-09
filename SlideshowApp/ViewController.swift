@@ -32,18 +32,35 @@ class ViewController: UIViewController {
         "f0134f93-s.gif"]
 
     var timer: Timer!
+    @IBOutlet weak var imageButton: UIButton!
+    @IBOutlet weak var image: UIImageView!
+    var index = -1 // 最初だけ−1から開始
+    @IBOutlet weak var button: UIButton!
 
     @IBAction func startStopSlideshow(_ sender: Any) {
         if timer == nil {
             timer = Timer.scheduledTimer(timeInterval: 2.0, target: self, selector: #selector(showNextImage), userInfo:nil, repeats: true)
+            button.setTitle("⏸", for: .normal)
         } else{
             timer.invalidate()
             timer = nil
+            button.setTitle("▶", for: .normal)
         }
     }
     
     func showNextImage() {
-        
+        index = (index + 1) % thumbImages.count
+        let img = UIImage(named: thumbImages[index])
+        image.image = img
+    }
+
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let imageViewController = segue.destination as! ImageViewController
+        imageViewController.currentImageIndex = index
+    }
+    
+    @IBAction func unwind(for unwindSegue: UIStoryboardSegue) {
+        // ?
     }
 }
 
