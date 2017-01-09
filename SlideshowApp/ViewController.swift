@@ -36,20 +36,32 @@ class ViewController: UIViewController {
     @IBOutlet weak var image: UIImageView!
     var index = -1 // 最初だけ−1から開始
     @IBOutlet weak var button: UIButton!
+    @IBOutlet weak var nextButton: UIButton!
+    @IBOutlet weak var previousButton: UIButton!
 
     @IBAction func startStopSlideshow(_ sender: Any) {
         if timer == nil {
             timer = Timer.scheduledTimer(timeInterval: 2.0, target: self, selector: #selector(showNextImage), userInfo:nil, repeats: true)
             button.setTitle("⏸", for: .normal)
+            nextButton.isEnabled = false
+            previousButton.isEnabled = false
         } else{
             timer.invalidate()
             timer = nil
             button.setTitle("▶", for: .normal)
+            nextButton.isEnabled = true
+            previousButton.isEnabled = true
         }
     }
     
-    func showNextImage() {
+    @IBAction func showNextImage(_ sender: Any) {
         index = (index + 1) % thumbImages.count
+        let img = UIImage(named: thumbImages[index])
+        image.image = img
+    }
+
+    @IBAction func showPreviousImage(_ sender: Any) {
+        index = (index - 1 + thumbImages.count) % thumbImages.count
         let img = UIImage(named: thumbImages[index])
         image.image = img
     }
@@ -57,6 +69,13 @@ class ViewController: UIViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let imageViewController = segue.destination as! ImageViewController
         imageViewController.currentImageIndex = index
+        if timer != nil {
+            timer.invalidate()
+            timer = nil
+            button.setTitle("▶", for: .normal)
+            nextButton.isEnabled = true
+            previousButton.isEnabled = true
+        }
     }
     
     @IBAction func unwind(for unwindSegue: UIStoryboardSegue) {
