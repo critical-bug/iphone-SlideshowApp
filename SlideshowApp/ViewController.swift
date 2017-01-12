@@ -34,7 +34,7 @@ class ViewController: UIViewController {
     var timer: Timer!
     @IBOutlet weak var imageButton: UIButton!
     @IBOutlet weak var image: UIImageView!
-    var index = -1 // 最初だけ−1から開始
+    var index = 0
     @IBOutlet weak var button: UIButton!
     @IBOutlet weak var nextButton: UIButton!
     @IBOutlet weak var previousButton: UIButton!
@@ -44,13 +44,11 @@ class ViewController: UIViewController {
             timer = Timer.scheduledTimer(timeInterval: 2.0, target: self, selector: #selector(showNextImage), userInfo:nil, repeats: true)
             button.setTitle("⏸", for: .normal)
             nextButton.isEnabled = false
+            nextButton.alpha = 0.3
             previousButton.isEnabled = false
+            previousButton.alpha = 0.3
         } else{
-            timer.invalidate()
-            timer = nil
-            button.setTitle("▶", for: .normal)
-            nextButton.isEnabled = true
-            previousButton.isEnabled = true
+            doStopSlideshow()
         }
     }
     
@@ -70,16 +68,22 @@ class ViewController: UIViewController {
         let imageViewController = segue.destination as! ImageViewController
         imageViewController.currentImageIndex = index
         if timer != nil {
-            timer.invalidate()
-            timer = nil
-            button.setTitle("▶", for: .normal)
-            nextButton.isEnabled = true
-            previousButton.isEnabled = true
+            doStopSlideshow()
         }
     }
     
     @IBAction func unwind(for unwindSegue: UIStoryboardSegue) {
         // ?
+    }
+
+    private func doStopSlideshow() {
+        timer.invalidate()
+        timer = nil
+        button.setTitle("▶️", for: .normal)
+        nextButton.isEnabled = true
+        nextButton.alpha = 1.0
+        previousButton.isEnabled = true
+        previousButton.alpha = 1.0
     }
 }
 
